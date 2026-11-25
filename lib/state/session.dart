@@ -41,13 +41,20 @@ class Session extends ChangeNotifier {
   String? get companyEmail => _companyEmail;
   bool get isLoggedIn => _token != null;
 
-  /// Aggiunge "http://" se manca e toglie la "/" finale.
+  /// Porta del server usata quando l'indirizzo inserito non ne specifica una.
+  static const defaultPort = 8080;
+
+  /// Aggiunge "http://" e la porta 8080 se mancano e toglie la "/" finale.
   static String normalizeUrl(String input) {
     var url = input.trim();
     if (url.isEmpty) return url;
     if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'http://$url';
     while (url.endsWith('/')) {
       url = url.substring(0, url.length - 1);
+    }
+    final uri = Uri.tryParse(url);
+    if (uri != null && uri.scheme == 'http' && uri.host.isNotEmpty && !uri.hasPort) {
+      url = uri.replace(port: defaultPort).toString();
     }
     return url;
   }

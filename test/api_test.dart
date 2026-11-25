@@ -27,6 +27,12 @@ void main() {
     expect(Session.normalizeUrl(' https://x.it// '), 'https://x.it');
   });
 
+  test('senza porta viene usata la 8080 del server', () {
+    expect(Session.normalizeUrl('192.168.1.109'), 'http://192.168.1.109:8080');
+    expect(Session.normalizeUrl('http://192.168.1.109/'), 'http://192.168.1.109:8080');
+    expect(Session.normalizeUrl('192.168.1.109:9000'), 'http://192.168.1.109:9000');
+  });
+
   test('Job e JobApplication dal JSON del server', () {
     final job = Job.fromJson({
       'id': 3, 'title': 'Dev', 'description': 'Desc', 'location': 'Salerno',
